@@ -1,17 +1,17 @@
 // dependencies
 const inquirer = require("inquirer");
 const fs = require("fs");
-
+const htmlTemplate = require('./src/page-template.js')
 
 const Employee = require('./lib/employee');
-const Engineer = require('./lib/engineer')
 // empty array
 const teamMembers = [];
  
-// generate
+// classes
+const managers = require('./lib/manager');
 const engineers = require('./lib/engineer');
 const interns = require('./lib/intern');
-const managers = require('./lib/manager');
+
 
 
 
@@ -25,8 +25,8 @@ function initApp() {
     },
     {
         type: "list",
-        message: "Select team member's role",
-        choices: ["Engineer", 'Intern', 'Manager'],
+        message: "Choose team member's role",
+        choices: ['Manager', 'Intern', 'Engineer'],
         name: 'role'
     },
     {
@@ -42,19 +42,19 @@ function initApp() {
     ]).then(({ name, role, id, email }) => {
             const info = role;
             switch (info) {
+                case 'Manager':
+                    var roleInfo = 'Office phone number';
+                    break;
                 case 'Engineer': {
-                   var roleInfo = 'Github username';1
+                   var roleInfo = 'Github username';
                     break;
                 }
                 case 'Intern': {
                     var roleInfo = 'School name';
                     break;
-                }
-                case 'Manager':
-                    var roleInfo = 'Office phone number';
-                    break;
-                
+                }   
             }
+
             inquirer.prompt([{
                 type: 'input',
                 message: `Enter team member's ${roleInfo}`,
@@ -69,27 +69,29 @@ function initApp() {
                console.log(roleInfo)
                 var newMember;
                 switch(role) {
+                    case 'Manager': {
+                        newMember = new managers(name,id,email,roleInfo);
+                        teamMembers.push(newMember);
+                        break;
+                    }
                     case 'Engineer': {
                         console.log(roleInfo)
-                        newMember = new Engineer(name,id,email,roleInfo)
-                        engineerArray.push(generateEP.generateEngineer(newMember))
+                        newMember = new engineers(name,id,email,roleInfo)
+                        teamMembers.push(newMember)
                         
                         break;
                     }
+                    
                     case 'Intern': {
-                        newMember = new Intern(name,id,email,roleInfo);
-                        internArray.push(generateEP.generateIntern(newMember));
+                        newMember = new interns(name,id,email,roleInfo);
+                        teamMembers.push(newMember);
                         break;
                     }
-                    case 'Manager': {
-                        newMember = new Manager(name,id,email,roleInfo);
-                        managerArray.push(generateEP.generateManager(newMember));
-                        break;
-                    }
+                    
                 }
                     switch(moreMembers) {
                         case 'Yes':{
-                            addEmployee();
+                            initApp();
                             break;
                         }
                         case 'No':{
@@ -105,14 +107,21 @@ function initApp() {
 
 
 function finishHtml() {
-  const arrays = {
-      engineers: engineerArray.join(),
-      interns: internArray.join(),
-      managers: managerArray.join(),
-  }
-  const markup = generateEP.htmlMarkup(arrays)
+//   const arrays = {
+//       engineers: engineerArray.join(),
+//       interns: internArray.join(),
+//       managers: managerArray.join(),
+//   }
 
-   writeUpHtml(markup)
+//   const markup = generateEP.htmlMarkup(teamMembers)
+
+    console.log(teamMembers)
+
+    const generatedHTML = htmlTemplate(teamMembers);
+
+    // console.log(generatedHTML)
+
+   writeUpHtml(generatedHTML)
 }
 
 function writeUpHtml(markup) {
