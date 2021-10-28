@@ -12,7 +12,7 @@ const memberTemplate = (member) => {
     return `
 <div class="card" style="width: 18rem;">
     <div class="align-items-center">
-         <section class="row justify-content-around">
+         <section class="row justify-content-around bg-danger">
              <h5 class="card-title">${member.getName()}</h5>
              <p class="card-text">${member.getRole()}</p>
          </section>
@@ -41,6 +41,7 @@ const htmlTemplate = (teamMembers) => {
     <body>
     <header class="jumbotron jumbotron-fluid bg-primary text-light">
             <h1 class="text-center">Team's Profile Generated</h1>
+
     </header>
 
         <section class="d-flex justify-content-around">
